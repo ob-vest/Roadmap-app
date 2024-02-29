@@ -13,11 +13,19 @@ struct RoadmapView: View {
     @State private var tag: RoadmapSubject.Tag = .feature
     @State private var searchQuery = ""
     @State private var openNewRequest = false
+    @Environment(\.horizontalSizeClass) var sizeClass
+    let compactColumns = [
+        GridItem(.flexible())
+    ]
+    let regularColumns = [
+        GridItem(.flexible()),
+        GridItem(.flexible())
+    ]
     var body: some View {
         NavigationStack {
             
             ScrollView {
-                VStack(spacing: 15) {
+                LazyVGrid(columns: sizeClass == .compact ? compactColumns : regularColumns, spacing: 15) {
                     ForEach(RoadmapSubject.mockArray.filter {
                         searchQuery.isEmpty || $0.title.lowercased().contains(searchQuery.lowercased())
                     }) { subject in
@@ -55,7 +63,6 @@ struct RoadmapView: View {
                             
                         }
                         .fontWeight(.semibold)
-                        //                        .foregroundStyle(Color(.systemBackground))
                         .padding(.horizontal, 2)
                         
                     }
