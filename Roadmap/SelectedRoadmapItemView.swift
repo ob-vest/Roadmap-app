@@ -64,28 +64,50 @@ struct SelectedRoadmapItemView: View {
     let subject: RoadmapSubject
     @State private var commentVM = CommentVM()
     @FocusState private var isFocused: Bool
+    @Environment(\.horizontalSizeClass) var sizeClass
     var body: some View {
+        Group {
+            switch sizeClass {
+                
+            case .compact: iphoneLayout
+            default: ipadLayout
+                
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Text(subject.status.rawValue)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .scrollDismissesKeyboard(.immediately)
+        
+    }
+}
+extension SelectedRoadmapItemView {
+    
+    var iphoneLayout: some View {
         ScrollView {
             VStack {
-                VStack(alignment: .leading) {
-                    
-                    SubjectInfoView()
-                        .padding(.top, 3)
-                    DeveloperNoteView()
-                        .padding(.vertical)
-                    UpvoteButton(subject: subject)
-                    
-                    //            .frame(maxWidth: .infinity, alignment: .trailing)
-                    
-                    //                RoundedRectangle(cornerRadius: 20)
-                    //                    .fill(Color(.secondarySystemBackground))
-                    //                    .frame(height: 3)
-                    //                Spacer()
-                }
-                .padding()
-                .background(Color(.secondarySystemBackground).clipShape(RoundedRectangle(cornerRadius: 20)))
                 
-                ChatView()
+                mainView
+                VStack {
+                    HStack {
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(Color(.secondarySystemBackground))
+                            .frame(height: 3)
+                        Text("Comments")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(Color(.secondarySystemBackground))
+                            .frame(height: 3)
+                    }
+                    .padding(.vertical)
+                    ChatView()
+                }
                 ContentUnavailableView {
                     Label("No comments yet", systemImage: "bubble.left.and.bubble.right")
                 } description: {
@@ -93,75 +115,80 @@ struct SelectedRoadmapItemView: View {
                 }
             }
             .padding(.horizontal)
-            .padding(.top)
-            //            .navigationTitle("\(subject.totalUpvotes) upvotes")
-            .navigationBarTitleDisplayMode(.inline)
+            .padding(.top, 5)
             
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Text(subject.status.rawValue)
-                        .foregroundStyle(.secondary)
-                }
-                //                ToolbarItem(placement: .bottomBar) {
-                //                    Button { isFocused = true } label: {
-                //                        HStack {
-                //                            Text("Add a comment")
-                //                            Image(systemName: "bubble.left.and.bubble.right")
-                //                        }
-                //                    }
-                //                    .foregroundStyle(.primary)
-                //                    .padding(.vertical, 5)
-                //                    .frame(maxWidth: .infinity)
-                //                    .background(Color(.tintColor), in: .capsule)
-                //                }
-                //                ToolbarItem(placement: .keyboard) {
-                //                    HStack {
-                //                        TextField("Type a message...", text: $messageText)
-                //                            .textFieldStyle(.roundedBorder)
-                //                            .focused($isFocused)
-                ////                            .padding()
-                //
-                //                        // Send button
-                //                        Button {} label: {
-                //                            Image(systemName: "paperplane.fill")
-                //                                .padding()
-                //                        }
-                //                    }
-                //                }
-            }
         }
-        .scrollDismissesKeyboard(.immediately)
         .overlay(
-            HStack {
-                TextField("Type a comment...", text: $commentVM.message)
-                    .submitLabel(.return)
-                    .padding(.vertical, 10)
-                    .padding(.horizontal)
-                    .background(
-                        RoundedRectangle(cornerRadius: 20)
-                            .strokeBorder(Color(.tertiarySystemFill), lineWidth: 1)
-                    )
-                    .focused($isFocused)
-                
-                Button {commentVM.sendComment(completion: { isFocused = !$0 } )} label: {
-                    Image(systemName: "paperplane.fill")
-                    
-                        .padding(.vertical, 10)
-                        .padding(.horizontal)
-                        .foregroundStyle(Color(.white))
-                        .background(Color(commentVM.isCommentValid() ? .tintColor : .secondarySystemBackground), in: .capsule)
-                        .disabled(!commentVM.isCommentValid())
-                        .transition(.opacity.animation(.easeInOut(duration: 0.2)))
-                        .animation(.smooth, value: commentVM.isCommentValid())
-                }
-                
-            }
+            keyboardOverlay
+        )
+    }
+    
+    var ipadLayout: some View {
+        HStack(alignment: .top) {
+            mainView
+            
+            ChatView()
+                .overlay(
+                    keyboardOverlay
+                )
+            
+        }
+        .padding(.horizontal)
+    }
+}
+extension SelectedRoadmapItemView {
+    var mainView: some View {
+        VStack(alignment: .leading) {
+            
+            SubjectInfoView()
+                .padding(.top, 3)
+            DeveloperNoteView()
+                .padding(.vertical)
+            UpvoteButton(subject: subject)
+            
+            //            .frame(maxWidth: .infinity, alignment: .trailing)
+            
+            //                RoundedRectangle(cornerRadius: 20)
+            //                    .fill(Color(.secondarySystemBackground))
+            //                    .frame(height: 3)
+            //                Spacer()
+        }
+        .padding()
+        .background(Color(.secondarySystemBackground).clipShape(RoundedRectangle(cornerRadius: 20)))
+    }
+    
+    var keyboardOverlay: some View {
+        
+        HStack {
+            TextField("Type a comment...", text: $commentVM.message)
+                .submitLabel(.return)
                 .padding(.vertical, 10)
                 .padding(.horizontal)
-                .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .all))
-                .frame(maxHeight: .infinity, alignment: .bottom)
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .strokeBorder(Color(.tertiarySystemFill), lineWidth: 1)
+                )
+                .focused($isFocused)
             
-        )
+            Button {commentVM.sendComment(completion: { isFocused = !$0 } )} label: {
+                Image(systemName: "paperplane.fill")
+                
+                    .padding(.vertical, 10)
+                    .padding(.horizontal)
+                    .foregroundStyle(Color(.white))
+                    .background(Color(commentVM.isCommentValid() ? .tintColor : .secondarySystemBackground), in: .capsule)
+                    .disabled(!commentVM.isCommentValid())
+                    .transition(.opacity.animation(.easeInOut(duration: 0.2)))
+                    .animation(.smooth, value: commentVM.isCommentValid())
+            }
+            
+        }
+        .padding(.vertical, 10)
+        .padding(.horizontal)
+        .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .all))
+        .frame(maxHeight: .infinity, alignment: .bottom)
+        
+        
     }
 }
 extension SelectedRoadmapItemView {
@@ -253,27 +280,16 @@ fileprivate struct ChatView: View {
     var comments: [Comment] = Comment.mockArray
     
     var body: some View {
-        VStack {
-            HStack {
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(Color(.secondarySystemBackground))
-                    .frame(height: 3)
-                Text("Comments")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(Color(.secondarySystemBackground))
-                    .frame(height: 3)
-            }
-            .padding(.vertical)
-            ScrollView {
-                VStack(alignment: .leading, spacing: 12) {
-                    ForEach(comments) { comment in
-                        ChatBubble(comment: comment)
-                    }
+        
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                ForEach(comments) { comment in
+                    ChatBubble(comment: comment)
                 }
             }
+            .padding(.bottom, 90) // bottom padding for keyboard overlay
         }
+        
     }
 }
 
