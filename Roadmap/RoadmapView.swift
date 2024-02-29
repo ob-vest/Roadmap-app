@@ -11,7 +11,6 @@ import SwiftUI
 struct RoadmapView: View {
     @State private var status: RoadmapSubject.Status = .planned
     @State private var tag: RoadmapSubject.Tag = .feature
-    @State private var searchQuery = ""
     @State private var openNewRequest = false
     @Environment(\.horizontalSizeClass) var sizeClass
     let compactColumns = [
@@ -26,9 +25,7 @@ struct RoadmapView: View {
             
             ScrollView {
                 LazyVGrid(columns: sizeClass == .compact ? compactColumns : regularColumns, spacing: 15) {
-                    ForEach(RoadmapSubject.mockArray.filter {
-                        searchQuery.isEmpty || $0.title.lowercased().contains(searchQuery.lowercased())
-                    }) { subject in
+                    ForEach(RoadmapSubject.mockArray) { subject in
                         NavigationLink(destination: SelectedRoadmapItemView(subject: subject)) {
                             RoadmapListItemView(subject: subject)
                                 .padding(.horizontal)
@@ -46,7 +43,6 @@ struct RoadmapView: View {
             .sheet(isPresented: $openNewRequest) {
                 NewRequestView()
             }
-            .searchable(text: $searchQuery)
             .navigationTitle("Roadmap")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {

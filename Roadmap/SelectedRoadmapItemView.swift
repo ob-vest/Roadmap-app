@@ -38,8 +38,11 @@ extension Comment {
     ]
 }
 
-@Observable class CommentVM {
+@Observable class CommentViewModel {
     fileprivate var comments: [Comment] = []
+    
+    private(set) var commentError: NetworkError?
+    var showError: Bool = false
     
     var message: String = ""
     
@@ -51,20 +54,39 @@ extension Comment {
     }
     func fetchComments() {
         comments = Comment.mockArray
+        //        showError(.invalidData)
+        
+    }
+    func showError(_ error: NetworkError) {
+        commentError = error
+        showError = true
     }
 }
 
-extension CommentVM {
+extension CommentViewModel {
     func isCommentValid() -> Bool {
         return message.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false
+    }
+    enum NetworkError: Error {
+        case requestFailed
+        case invalidData
+        
+        var localizedDescription: String {
+            switch self {
+            case .requestFailed:
+                return "Failed to get comments. Please try again later."
+            case .invalidData:
+                return "Invalid comment data"
+            }
+        }
     }
 }
 
 struct SelectedRoadmapItemView: View {
     let subject: RoadmapSubject
-    @State private var commentVM = CommentVM()
     @FocusState private var isFocused: Bool
     @Environment(\.horizontalSizeClass) var sizeClass
+    @State var commentVM = CommentViewModel()
     var body: some View {
         Group {
             switch sizeClass {
@@ -83,9 +105,19 @@ struct SelectedRoadmapItemView: View {
             }
         }
         .scrollDismissesKeyboard(.immediately)
+        .task {
+            commentVM.fetchComments()
+        }
+        .alert("Error", isPresented: $commentVM.showError) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(commentVM.commentError?.localizedDescription ?? "")
+        }
         
     }
 }
+
+
 extension SelectedRoadmapItemView {
     
     var iphoneLayout: some View {
@@ -106,13 +138,9 @@ extension SelectedRoadmapItemView {
                             .frame(height: 3)
                     }
                     .padding(.vertical)
-                    ChatView()
+                    ChatView(commentVM: commentVM)
                 }
-                ContentUnavailableView {
-                    Label("No comments yet", systemImage: "bubble.left.and.bubble.right")
-                } description: {
-                    Text("Be the first to comment")
-                }
+                
             }
             .padding(.horizontal)
             .padding(.top, 5)
@@ -127,7 +155,7 @@ extension SelectedRoadmapItemView {
         HStack(alignment: .top) {
             mainView
             
-            ChatView()
+            ChatView(commentVM: commentVM)
                 .overlay(
                     keyboardOverlay
                 )
@@ -277,19 +305,25 @@ extension SelectedRoadmapItemView {
 
 fileprivate struct ChatView: View {
     
-    var comments: [Comment] = Comment.mockArray
-    
+    @Bindable var commentVM: CommentViewModel
     var body: some View {
-        
-        ScrollView {
-            VStack(alignment: .leading, spacing: 12) {
-                ForEach(comments) { comment in
-                    ChatBubble(comment: comment)
-                }
+        if commentVM.comments.isEmpty {
+            ContentUnavailableView {
+                Label("No comments yet", systemImage: "bubble.left.and.bubble.right")
+            } description: {
+                Text("Be the first to comment")
             }
             .padding(.bottom, 90) // bottom padding for keyboard overlay
+        } else {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
+                    ForEach(commentVM.comments) { comment in
+                        ChatBubble(comment: comment)
+                    }
+                }
+                .padding(.bottom, 90) // bottom padding for keyboard overlay
+            }
         }
-        
     }
 }
 
@@ -333,44 +367,3 @@ fileprivate struct ChatBubble: View {
             .navigationBarTitleDisplayMode(.inline)
     }
 }
-
-//HStack {
-//    HStack {
-//        HStack {
-//            Image(systemName: "arrowshape.up")
-//                .font(.title3)
-//            Text("Upvote")
-//        }
-//        .foregroundStyle(Color(.systemBlue))        .padding()
-//        .background(
-//            RoundedRectangle(cornerRadius: 25)
-//                .stroke(Color(.systemBlue), lineWidth: 1)
-//        )
-//        Spacer()
-//        HStack {
-//            HStack(spacing: 0) {
-//                Image(systemName: "arrowshape.up")
-//                    .font(.title3)
-//                Image(systemName: "arrowshape.up")
-//                    .font(.title3)
-//
-//            }
-//            Text("Super Upvote")
-//        }
-//
-//        .foregroundStyle(Color(.systemYellow))        .padding()
-//        .background(
-//            RoundedRectangle(cornerRadius: 25)
-//                .stroke(Color(.systemYellow), lineWidth: 1)
-//
-//
-//        )
-//    }
-//
-//    //                    HStack {
-//    //                        Image(systemName: "bubble.fill")
-//    //                            .font(.title3)
-//    //                        Text("\(subject.totalUpvotes)")
-//    //                            .font(.title3)
-//    //                    }
-//}
