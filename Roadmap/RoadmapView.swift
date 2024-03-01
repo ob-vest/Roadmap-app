@@ -9,23 +9,23 @@ import SwiftUI
 
 @Observable class RoadmapViewModel {
     var subjects: [RoadmapSubject] = RoadmapSubject.mockArray
-    
+
     var selectedSortCriteria: SortCriteria = .upvotes {
         didSet {
             sortSubjects(by: selectedSortCriteria)
         }
     }
-    
+
     init() {
         sortSubjects(by: selectedSortCriteria)
     }
     func upvote(subject: RoadmapSubject) {
         guard let index = subjects.firstIndex(where: { $0.id == subject.id }) else { return }
-        
+
         subjects[index].didUpvote.toggle()
-        
+
     }
-    
+
     func sortSubjects(by criteria: SortCriteria) {
         switch criteria {
         case .newest:
@@ -35,9 +35,9 @@ import SwiftUI
         default:
             print("Not implemented yet")
         }
-        
+
     }
-    
+
     enum SortCriteria: String, CaseIterable {
         case newest = "Newest"
         case recentActivity = "Recent activity"
@@ -60,7 +60,7 @@ struct RoadmapView: View {
     ]
     var body: some View {
         NavigationStack {
-            
+
             ScrollView {
                 sortMenu
                 LazyVGrid(columns: sizeClass == .compact ? compactColumns : regularColumns, spacing: 15) {
@@ -70,14 +70,13 @@ struct RoadmapView: View {
                                 .padding(.horizontal)
                         }
                         .buttonStyle(.plain)
-                        
-                        
+
                     }
-                    
+
                 }
-                
+
             }
-            
+
             .refreshable {
                 print("Refreshed")
             }
@@ -87,26 +86,25 @@ struct RoadmapView: View {
             .navigationTitle("Roadmap")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    
+
                     Button {
                         print("Add button tapped")
                         openNewRequest.toggle()
                     } label: {
                         HStack {
                             Image(systemName: "square.and.pencil")
-                            
+
                             Text("Request")
-                            
-                            
+
                         }
                         .fontWeight(.semibold)
                         .padding(.horizontal, 2)
-                        
+
                     }
                     .buttonStyle(.borderedProminent)
                     .clipShape(Capsule())
                 }
-                
+
                 //                ToolbarItem(placement: .navigationBarLeading) {
                 //                    Picker("Sort by", selection: $roadmapVM.selectedSortCriteria) {
                 //                        ForEach(RoadmapViewModel.SortCriteria.allCases, id: \.self) { criteria in
@@ -146,9 +144,9 @@ extension RoadmapView {
             ForEach(RoadmapViewModel.SortCriteria.allCases, id: \.self) { criteria in
                 Text(criteria.rawValue)
                     .tag(criteria)
-                
+
             }
-            
+
         }
         .tint(.secondary)
         .pickerStyle(.menu)

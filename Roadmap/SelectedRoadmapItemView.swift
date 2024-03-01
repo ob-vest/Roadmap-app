@@ -8,7 +8,7 @@
 import SwiftUI
 import Pow
 
-fileprivate struct Comment: Identifiable {
+private struct Comment: Identifiable {
     var id = UUID()
     var user: String
     var message: String
@@ -34,18 +34,18 @@ extension Comment {
         Comment(user: "Rivera Sam", message: "Let's not rush into this without more research.", date: Date(timeIntervalSinceNow: -3600 * 24)), // 24 hours ago
         Comment(user: "Bailey Alexis", message: "I'm on board with the idea, pending budget review.", date: Date()),
         Comment(user: "Jordan Drew", message: "This initiative could really benefit from more diverse perspectives.", date: Date(timeIntervalSinceNow: -86400 * 1)), // 1 day ago
-        Comment(user: "Quinn Taylor", message: "I'm excited, but let's plan carefully.", date: Date(timeIntervalSinceNow: -3600 * 12)), // 12 hours ago
+        Comment(user: "Quinn Taylor", message: "I'm excited, but let's plan carefully.", date: Date(timeIntervalSinceNow: -3600 * 12)) // 12 hours ago
     ]
 }
 
 @Observable class CommentViewModel {
     fileprivate var comments: [Comment] = []
-    
+
     private(set) var commentError: NetworkError?
     var showError: Bool = false
-    
+
     var message: String = ""
-    
+
     func sendComment(completion: @escaping (Bool) -> Void) {
         guard isCommentValid() else { return completion(false) }
         comments.append(Comment(user: "You", message: message, date: Date()))
@@ -55,7 +55,7 @@ extension Comment {
     func fetchComments() {
         comments = Comment.mockArray
         //        showError(.invalidData)
-        
+
     }
     func showError(_ error: NetworkError) {
         commentError = error
@@ -70,7 +70,7 @@ extension CommentViewModel {
     enum NetworkError: Error {
         case requestFailed
         case invalidData
-        
+
         var localizedDescription: String {
             switch self {
             case .requestFailed:
@@ -90,14 +90,14 @@ struct SelectedRoadmapItemView: View {
     var body: some View {
         Group {
             switch sizeClass {
-                
+
             case .compact: iphoneLayout
             default: ipadLayout
-                
+
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        
+
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Text(subject.status.rawValue)
@@ -113,17 +113,16 @@ struct SelectedRoadmapItemView: View {
         } message: {
             Text(commentVM.commentError?.localizedDescription ?? "")
         }
-        
+
     }
 }
 
-
 extension SelectedRoadmapItemView {
-    
+
     var iphoneLayout: some View {
         ScrollView {
             VStack {
-                
+
                 mainView
                 VStack {
                     HStack {
@@ -140,26 +139,26 @@ extension SelectedRoadmapItemView {
                     .padding(.vertical)
                     ChatView(commentVM: commentVM)
                 }
-                
+
             }
             .padding(.horizontal)
             .padding(.top, 5)
-            
+
         }
         .overlay(
             keyboardOverlay
         )
     }
-    
+
     var ipadLayout: some View {
         HStack(alignment: .top) {
             mainView
-            
+
             ChatView(commentVM: commentVM)
                 .overlay(
                     keyboardOverlay
                 )
-            
+
         }
         .padding(.horizontal)
     }
@@ -167,15 +166,15 @@ extension SelectedRoadmapItemView {
 extension SelectedRoadmapItemView {
     var mainView: some View {
         VStack(alignment: .leading) {
-            
+
             SubjectInfoView()
                 .padding(.top, 3)
             DeveloperNoteView()
                 .padding(.vertical)
             UpvoteButton(subject: subject)
-            
+
             //            .frame(maxWidth: .infinity, alignment: .trailing)
-            
+
             //                RoundedRectangle(cornerRadius: 20)
             //                    .fill(Color(.secondarySystemBackground))
             //                    .frame(height: 3)
@@ -184,9 +183,9 @@ extension SelectedRoadmapItemView {
         .padding()
         .background(Color(.secondarySystemBackground).clipShape(RoundedRectangle(cornerRadius: 20)))
     }
-    
+
     var keyboardOverlay: some View {
-        
+
         HStack {
             TextField("Type a comment...", text: $commentVM.message)
                 .submitLabel(.return)
@@ -197,10 +196,10 @@ extension SelectedRoadmapItemView {
                         .strokeBorder(Color(.tertiarySystemFill), lineWidth: 1)
                 )
                 .focused($isFocused)
-            
-            Button {commentVM.sendComment(completion: { isFocused = !$0 } )} label: {
+
+            Button {commentVM.sendComment(completion: { isFocused = !$0 })} label: {
                 Image(systemName: "paperplane.fill")
-                
+
                     .padding(.vertical, 10)
                     .padding(.horizontal)
                     .foregroundStyle(Color(.white))
@@ -209,14 +208,13 @@ extension SelectedRoadmapItemView {
                     .transition(.opacity.animation(.easeInOut(duration: 0.2)))
                     .animation(.smooth, value: commentVM.isCommentValid())
             }
-            
+
         }
         .padding(.vertical, 10)
         .padding(.horizontal)
         .background(Color(.systemBackground).ignoresSafeArea(.container, edges: .all))
         .frame(maxHeight: .infinity, alignment: .bottom)
-        
-        
+
     }
 }
 extension SelectedRoadmapItemView {
@@ -236,13 +234,13 @@ extension SelectedRoadmapItemView {
                 //                .cornerRadius(20))
                 HStack {
                     Image(systemName: "arrowshape.up.fill")
-                        .changeEffect(.spray{
+                        .changeEffect(.spray {
                             Image(systemName: "arrowshape.up.fill")
                         }, value: subject.didUpvote, isEnabled: !subject.didUpvote)
-                        .changeEffect(.spray{
+                        .changeEffect(.spray {
                             Text("\(subject.totalUpvotes)")
                         }, value: subject.didUpvote, isEnabled: !subject.didUpvote)
-                    
+
                     Text("\(subject.totalUpvotes)")
                 }
                 .bold()
@@ -253,8 +251,7 @@ extension SelectedRoadmapItemView {
                     .cornerRadius(20)
                     .opacity(0.2)
                 )
-                
-                
+
             }
         }
     }
@@ -262,11 +259,11 @@ extension SelectedRoadmapItemView {
         let subject: RoadmapSubject = .mock
         var body: some View {
             VStack(alignment: .leading, spacing: 10) {
-                
+
                 VStack(alignment: .leading) {
                     Text(subject.title)
                         .font(.title2)
-                    
+
                     Text(subject.tag.rawValue)
                         .font(.caption)
                         .bold()
@@ -301,14 +298,11 @@ extension SelectedRoadmapItemView {
             .fixedSize(horizontal: false, vertical: true)
         }
     }
-    
+
 }
 
+private struct ChatView: View {
 
-
-
-fileprivate struct ChatView: View {
-    
     @Bindable var commentVM: CommentViewModel
     var body: some View {
         if commentVM.comments.isEmpty {
@@ -331,12 +325,11 @@ fileprivate struct ChatView: View {
     }
 }
 
-fileprivate struct ChatBubble: View {
+private struct ChatBubble: View {
     var comment: Comment
-    
+
     var body: some View {
-        
-        
+
         VStack(alignment: .leading, spacing: 5) {
             HStack {
                 Text(comment.user)
@@ -347,15 +340,11 @@ fileprivate struct ChatBubble: View {
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
             }
-            
-            
+
             Text(comment.message)
-            
+
                 .frame(maxWidth: .infinity, alignment: .leading)
-            
-            
-            
-            
+
         }
         .padding(.vertical, 10)
         .padding(.horizontal)

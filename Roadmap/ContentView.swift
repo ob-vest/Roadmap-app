@@ -9,7 +9,7 @@ import AuthenticationServices
 import SwiftUI
 
 @Observable
-class authViewModel {
+class AuthViewModel {
     var id = ""
     func configurationRequest(_ request: ASAuthorizationAppleIDRequest) {
         request.requestedScopes = []
@@ -39,7 +39,7 @@ class authViewModel {
 
 struct ContentView: View {
     @Environment(\.colorScheme) var colorScheme
-    @State var authVM = authViewModel()
+    @State var authVM = AuthViewModel()
 
     var body: some View {
         VStack {

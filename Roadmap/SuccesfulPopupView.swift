@@ -13,22 +13,21 @@ struct SuccesfulPopupView: View {
     var body: some View {
         if isPresented {
             VStack(spacing: 20) {
-                
+
                 Image(systemName: "checkmark.circle.fill")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 100, height: 70)
                     .foregroundStyle(Color(.tintColor))
-                
+
                 Text(content.title())
                     .font(.title3)
                     .fontWeight(.bold)
-                
-                
+
                 Text(content.description())
                     .multilineTextAlignment(.center)
                     .foregroundStyle(Color(.secondaryLabel))
-                
+
             }
             .frame(maxWidth: 400)
             .padding()
@@ -39,7 +38,7 @@ struct SuccesfulPopupView: View {
                 Color(.systemBackground)
                     .opacity(0.3)
             )
-            
+
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                     withAnimation {
@@ -55,7 +54,7 @@ extension SuccesfulPopupView {
     enum SuccesfulType {
         case request
         case comment
-        
+
         func title() -> String {
             switch self {
             case .request:
@@ -64,7 +63,7 @@ extension SuccesfulPopupView {
                 return "Comment submitted"
             }
         }
-        
+
         func description() -> String {
             switch self {
             case .request:
