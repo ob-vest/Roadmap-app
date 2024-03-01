@@ -222,9 +222,9 @@ extension SelectedRoadmapItemView {
 extension SelectedRoadmapItemView {
     struct UpvoteButton: View {
         let subject: RoadmapSubject
-        @State private var isUpvoted = false
+        @Environment(RoadmapViewModel.self) var roadmapVM
         var body: some View {
-            Button { isUpvoted.toggle() } label: {
+            Button { roadmapVM.upvote(subject: subject) } label: {
                 //            HStack {
                 //                Image(systemName: "arrowshape.up.fill")
                 //
@@ -238,14 +238,18 @@ extension SelectedRoadmapItemView {
                     Image(systemName: "arrowshape.up.fill")
                         .changeEffect(.spray{
                             Image(systemName: "arrowshape.up.fill")
-                        }, value: isUpvoted, isEnabled: isUpvoted)
+                        }, value: subject.didUpvote, isEnabled: !subject.didUpvote)
+                        .changeEffect(.spray{
+                            Text("\(subject.totalUpvotes)")
+                        }, value: subject.didUpvote, isEnabled: !subject.didUpvote)
+                    
                     Text("\(subject.totalUpvotes)")
                 }
                 .bold()
                 .padding(.vertical, 10)
                 .padding(.horizontal, 20)
-                .foregroundStyle(Color(isUpvoted ? .tintColor : .gray))
-                .background(Color(isUpvoted ? .tintColor : .gray)
+                .foregroundStyle(Color(subject.didUpvote ? .tintColor : .gray))
+                .background(Color(subject.didUpvote ? .tintColor : .gray)
                     .cornerRadius(20)
                     .opacity(0.2)
                 )
@@ -361,9 +365,10 @@ fileprivate struct ChatBubble: View {
 }
 
 #Preview {
-    
+
     NavigationStack {
         SelectedRoadmapItemView(subject: RoadmapSubject.mock)
             .navigationBarTitleDisplayMode(.inline)
     }
+    .environment(RoadmapViewModel())
 }

@@ -11,9 +11,21 @@ struct RoadmapSubject: Identifiable {
     let id: UUID = UUID()
     let title: String
     let description: String
-    let totalUpvotes: Int
+    var totalUpvotes: Int
     let tag: Tag
     let status: Status
+    let creationDate: Date = Date()
+    let lastCommentDate: Date = Date()
+    var didUpvote: Bool = false {
+        didSet {
+            if didUpvote == true {
+                totalUpvotes += 1
+            } else {
+                totalUpvotes -= 1
+            }
+            
+        }
+    }
     
     enum Status: String {
         case planned = "Planned"
@@ -57,6 +69,7 @@ struct RoadmapListItemView: View {
                 Text("\(subject.totalUpvotes)")
             }
             .font(.title3)
+            .foregroundStyle(Color(subject.didUpvote ? .tintColor : .label))
             VStack(spacing: 10) {
                 
                 VStack(alignment: .leading) {
