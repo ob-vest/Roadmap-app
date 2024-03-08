@@ -51,6 +51,7 @@ struct RoadmapView: View {
     @State private var openNewRequest = false
     @Environment(\.horizontalSizeClass) var sizeClass
     @State private var roadmapVM = RoadmapViewModel()
+    @State private var showLogin = false
     let compactColumns = [
         GridItem(.flexible())
     ]
@@ -85,6 +86,15 @@ struct RoadmapView: View {
             }
             .navigationTitle("Roadmap")
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        print("Login button tapped")
+                        showLogin.toggle()
+                    } label: {
+                        Image(systemName: "person.crop.circle")
+                    }
+                    .buttonStyle(.plain)
+                }
                 ToolbarItem(placement: .navigationBarTrailing) {
 
                     Button {
@@ -133,6 +143,9 @@ struct RoadmapView: View {
                 ////                    }
                 //                }
             }
+        }
+        .sheet(isPresented: $showLogin) {
+            ContentView()
         }
         .environment(roadmapVM)
     }

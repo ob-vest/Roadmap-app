@@ -35,7 +35,7 @@ extension NewRequestVM {
 }
 
 struct NewRequestView: View {
-    @State private var vm = NewRequestVM()
+    @State private var requestVM = NewRequestVM()
     @FocusState private var focusedField: FocusField?
     private enum FocusField: Hashable {
         case title, description
@@ -48,26 +48,26 @@ struct NewRequestView: View {
             Form {
                 Section(footer: Text("Please provide a clear and concise title and description for your request.")) {
                     // Title TextField
-                    TextField("Title", text: $vm.title)
+                    TextField("Title", text: $requestVM.title)
                         .focused($focusedField, equals: .title)
                         .submitLabel(.next)
                         .onSubmit {
                             focusedField = .description // Switch focus to the description field when the return key is pressed
                         }
 
-                    TextEditor(text: $vm.description)
+                    TextEditor(text: $requestVM.description)
                         .frame(height: 200)
                         .foregroundStyle(.secondary)
 
                         .autocorrectionDisabled()
                         .focused($focusedField, equals: .description)
 
-                    Picker("Tag", selection: $vm.selectedTag) {
-                        ForEach(vm.tags, id: \.self) {
+                    Picker("Tag", selection: $requestVM.selectedTag) {
+                        ForEach(requestVM.tags, id: \.self) {
                             Text($0.rawValue)
                         }
                     }
-                    .onChange(of: vm.selectedTag) {
+                    .onChange(of: requestVM.selectedTag) {
                         focusedField = nil
                     }
 
@@ -81,9 +81,9 @@ struct NewRequestView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
 
                     Button("Submit") {
-                        vm.submitRequest(dismiss)
+                        requestVM.submitRequest(dismiss)
                     }
-                    .disabled(vm.isSubmitButtonDisabled)
+                    .disabled(requestVM.isSubmitButtonDisabled)
 
                 }
             }

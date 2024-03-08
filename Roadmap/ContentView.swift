@@ -13,6 +13,7 @@ class AuthViewModel {
     var id = ""
     func configurationRequest(_ request: ASAuthorizationAppleIDRequest) {
         request.requestedScopes = []
+
     }
 
     func authResult(_ result: Result<ASAuthorization, Error>) {
@@ -21,13 +22,16 @@ class AuthViewModel {
             print("Authorization successful.")
             switch authResults.credential {
             case let appleIDCredential as ASAuthorizationAppleIDCredential:
+
                 print("User ID: \(appleIDCredential.user)")
 //                print("Email: \(appleIDCredential.email ?? "Unknown")")
 //                print("Full Name: \(appleIDCredential.fullName?.description ?? "Unknown")")
+                print("State: \(appleIDCredential.state ?? "Unknown")")
                 dump("Real User Status: \(appleIDCredential.realUserStatus)")
-                print("Authorization Code: \(appleIDCredential.authorizationCode?.base64EncodedString() ?? "Unknown")")
-                print("JWT: \(String(data: appleIDCredential.identityToken!, encoding: .utf8) ?? "Unknown")")
+                print("Authorization Code 2: \(String(data: appleIDCredential.authorizationCode!, encoding: .utf8) ?? "Unknown")")
+                print("id_token: \(String(data: appleIDCredential.identityToken!, encoding: .utf8) ?? "Unknown")")
                 id = appleIDCredential.user
+
             default:
                 break
             }

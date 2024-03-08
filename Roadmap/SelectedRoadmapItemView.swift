@@ -8,33 +8,39 @@
 import SwiftUI
 import Pow
 
+struct User: Identifiable {
+    let id = UUID()
+    let name: String
+    let isDeveloper: Bool
+}
+
 private struct Comment: Identifiable {
     var id = UUID()
-    var user: String
+    var user: User
     var message: String
     var date: Date
 }
-
 extension Comment {
     static var mockArray: [Comment] = [
-        Comment(user: "John Doe", message: "This is a great idea!", date: Date(timeIntervalSinceNow: -86400 * 2)), // 2 days ago
-        Comment(user: "Jane Smith", message: "I agree! But have we considered the cost?", date: Date(timeIntervalSinceNow: -86400)), // 1 day ago
-        Comment(user: "Alex Johnson", message: "Can someone clarify the last point?", date: Date()),
-        Comment(user: "Casey Kim", message: "Absolutely brilliant! I'm all in.", date: Date(timeIntervalSinceNow: -3600 * 2)), // 2 hours ago
-        Comment(user: "Jordan Lee", message: "I have some concerns about the timeline.", date: Date(timeIntervalSinceNow: -86400 * 5)), // 5 days ago
-        Comment(user: "Chris Parker", message: "Looks good to me.", date: Date(timeIntervalSinceNow: -3600 * 48)), // 48 hours ago
-        Comment(user: "Pat Taylor", message: "I'm unsure, can we discuss this in our next meeting?", date: Date(timeIntervalSinceNow: -86400 * 7)), // 1 week ago
-        Comment(user: "Jamie Morgan", message: "Great initiative, let's make sure to allocate enough resources.", date: Date()),
-        Comment(user: "Sam Rivera", message: "Has anyone looked into the potential risks?", date: Date(timeIntervalSinceNow: -86400 * 3)), // 3 days ago
-        Comment(user: "Alexis Bailey", message: "I agree with Jane, the cost is a major factor to consider.", date: Date(timeIntervalSinceNow: -3600 * 5)), // 5 hours ago
-        Comment(user: "Drew Jordan", message: "This could really set us apart from the competition!", date: Date(timeIntervalSinceNow: -86400 * 4)), // 4 days ago
-        Comment(user: "Taylor Quinn", message: "I'll need more information before making a decision.", date: Date(timeIntervalSinceNow: -3600 * 72)), // 3 days in hours
-        Comment(user: "Jordan Casey", message: "Can we ensure that this is sustainable in the long term?", date: Date()),
-        Comment(user: "Morgan Pat", message: "Excited to see where this goes!", date: Date(timeIntervalSinceNow: -86400 * 6)), // 6 days ago
-        Comment(user: "Rivera Sam", message: "Let's not rush into this without more research.", date: Date(timeIntervalSinceNow: -3600 * 24)), // 24 hours ago
-        Comment(user: "Bailey Alexis", message: "I'm on board with the idea, pending budget review.", date: Date()),
-        Comment(user: "Jordan Drew", message: "This initiative could really benefit from more diverse perspectives.", date: Date(timeIntervalSinceNow: -86400 * 1)), // 1 day ago
-        Comment(user: "Quinn Taylor", message: "I'm excited, but let's plan carefully.", date: Date(timeIntervalSinceNow: -3600 * 12)) // 12 hours ago
+        Comment(user: User(name: "John Doe", isDeveloper: false), message: "This is a great idea!", date: Date(timeIntervalSinceNow: -86400 * 2)),
+        Comment(user: User(name: "Jane Smith", isDeveloper: false), message: "I agree! But have we considered the cost?", date: Date(timeIntervalSinceNow: -86400)),
+        Comment(user: User(name: "Onur Bas", isDeveloper: true), message: "Looks good to me", date: Date(timeIntervalSinceNow: -3600 * 12)),
+        Comment(user: User(name: "Alex Johnson", isDeveloper: false), message: "Can someone clarify the last point?", date: Date()),
+        Comment(user: User(name: "Casey Kim", isDeveloper: false), message: "Absolutely brilliant! I'm all in.", date: Date(timeIntervalSinceNow: -3600 * 2)),
+        Comment(user: User(name: "Jordan Lee", isDeveloper: false), message: "I have some concerns about the timeline.", date: Date(timeIntervalSinceNow: -86400 * 5)),
+        Comment(user: User(name: "Chris Parker", isDeveloper: false), message: "Looks good to me.", date: Date(timeIntervalSinceNow: -3600 * 48)),
+        Comment(user: User(name: "Pat Taylor", isDeveloper: false), message: "I'm unsure, can we discuss this in our next meeting?", date: Date(timeIntervalSinceNow: -86400 * 7)),
+        Comment(user: User(name: "Jamie Morgan", isDeveloper: false), message: "Great initiative, let's make sure to allocate enough resources.", date: Date()),
+        Comment(user: User(name: "Sam Rivera", isDeveloper: false), message: "Has anyone looked into the potential risks?", date: Date(timeIntervalSinceNow: -86400 * 3)),
+        Comment(user: User(name: "Alexis Bailey", isDeveloper: false), message: "I agree with Jane, the cost is a major factor to consider.", date: Date(timeIntervalSinceNow: -3600 * 5)),
+        Comment(user: User(name: "Drew Jordan", isDeveloper: false), message: "This could really set us apart from the competition!", date: Date(timeIntervalSinceNow: -86400 * 4)),
+        Comment(user: User(name: "Taylor Quinn", isDeveloper: false), message: "I'll need more information before making a decision.", date: Date(timeIntervalSinceNow: -3600 * 72)),
+        Comment(user: User(name: "Jordan Casey", isDeveloper: false), message: "Can we ensure that this is sustainable in the long term?", date: Date()),
+        Comment(user: User(name: "Morgan Pat", isDeveloper: false), message: "Excited to see where this goes!", date: Date(timeIntervalSinceNow: -86400 * 6)),
+        Comment(user: User(name: "Rivera Sam", isDeveloper: false), message: "Let's not rush into this without more research.", date: Date(timeIntervalSinceNow: -3600 * 24)),
+        Comment(user: User(name: "Bailey Alexis", isDeveloper: false), message: "I'm on board with the idea, pending budget review.", date: Date()),
+        Comment(user: User(name: "Jordan Drew", isDeveloper: false), message: "This initiative could really benefit from more diverse perspectives.", date: Date(timeIntervalSinceNow: -86400 * 1)),
+        Comment(user: User(name: "Quinn Taylor", isDeveloper: false), message: "I'm excited, but let's plan carefully.", date: Date(timeIntervalSinceNow: -3600 * 12))
     ]
 }
 
@@ -42,20 +48,19 @@ extension Comment {
     fileprivate var comments: [Comment] = []
 
     private(set) var commentError: NetworkError?
+
     var showError: Bool = false
 
     var message: String = ""
-
     func sendComment(completion: @escaping (Bool) -> Void) {
         guard isCommentValid() else { return completion(false) }
-        comments.append(Comment(user: "You", message: message, date: Date()))
+        comments.append(Comment(user: User(name: "You", isDeveloper: false), message: message, date: Date()))
         message = ""
         completion(true)
     }
     func fetchComments() {
         comments = Comment.mockArray
         //        showError(.invalidData)
-
     }
     func showError(_ error: NetworkError) {
         commentError = error
@@ -91,8 +96,8 @@ struct SelectedRoadmapItemView: View {
         Group {
             switch sizeClass {
 
-            case .compact: iphoneLayout
-            default: ipadLayout
+            case .compact: compactLayout
+            default: regularLayout
 
             }
         }
@@ -119,7 +124,7 @@ struct SelectedRoadmapItemView: View {
 
 extension SelectedRoadmapItemView {
 
-    var iphoneLayout: some View {
+    var compactLayout: some View {
         ScrollView {
             VStack {
 
@@ -150,7 +155,7 @@ extension SelectedRoadmapItemView {
         )
     }
 
-    var ipadLayout: some View {
+    var regularLayout: some View {
         HStack(alignment: .top) {
             mainView
 
@@ -332,9 +337,17 @@ private struct ChatBubble: View {
 
         VStack(alignment: .leading, spacing: 5) {
             HStack {
-                Text(comment.user)
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+                HStack {
+                    Text(comment.user.name)
+                    if comment.user.isDeveloper {
+                        Text("DEVELOPER")
+                            .fontDesign(.monospaced)
+                            .font(.system(size: 8))
+                            .fontWeight(.bold)
+                    }
+                }
+                .font(.caption2)
+                .foregroundStyle( comment.user.isDeveloper ? .blue : .secondary)
                 Spacer()
                 Text(comment.date.formatRelativeTime())
                     .font(.caption2)
@@ -348,7 +361,17 @@ private struct ChatBubble: View {
         }
         .padding(.vertical, 10)
         .padding(.horizontal)
-        .background(Color(.secondarySystemBackground))
+        .background(
+            Color(.secondarySystemBackground)
+                .overlay(
+                    Group {
+                        if comment.user.isDeveloper {
+                            RoundedRectangle(cornerRadius: 15)
+                                .strokeBorder(Color(.tintColor), lineWidth: 2)
+                        }
+                    }
+                )
+        )
         .cornerRadius(15)
     }
 }
