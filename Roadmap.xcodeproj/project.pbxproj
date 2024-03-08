@@ -18,6 +18,7 @@
 		778303832B8E965C0074FC37 /* RoadmapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778303822B8E965C0074FC37 /* RoadmapView.swift */; };
 		778303852B8EA39F0074FC37 /* SelectedRoadmapItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778303842B8EA39F0074FC37 /* SelectedRoadmapItemView.swift */; };
 		77C8C4A92B913BE200F672DA /* SuccesfulPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77C8C4A82B913BE200F672DA /* SuccesfulPopupView.swift */; };
+		E341867A2B9B1165008A5482 /* AuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E34186792B9B1165008A5482 /* AuthenticationViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +34,7 @@
 		778303822B8E965C0074FC37 /* RoadmapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadmapView.swift; sourceTree = "<group>"; };
 		778303842B8EA39F0074FC37 /* SelectedRoadmapItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedRoadmapItemView.swift; sourceTree = "<group>"; };
 		77C8C4A82B913BE200F672DA /* SuccesfulPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccesfulPopupView.swift; sourceTree = "<group>"; };
+		E34186792B9B1165008A5482 /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +84,7 @@
 				778303822B8E965C0074FC37 /* RoadmapView.swift */,
 				77067C8E2B8FECAA00D00296 /* NewRequestView.swift */,
 				77C8C4A82B913BE200F672DA /* SuccesfulPopupView.swift */,
+				E34186792B9B1165008A5482 /* AuthenticationViewModel.swift */,
 				773BF3562B8E153B00DA78AC /* Assets.xcassets */,
 				773BF3582B8E153B00DA78AC /* Roadmap.entitlements */,
 				773BF3592B8E153B00DA78AC /* Preview Content */,
@@ -202,6 +205,7 @@
 				778303852B8EA39F0074FC37 /* SelectedRoadmapItemView.swift in Sources */,
 				77067C8F2B8FECAA00D00296 /* NewRequestView.swift in Sources */,
 				778303812B8E88ED0074FC37 /* RoadmapListItemView.swift in Sources */,
+				E341867A2B9B1165008A5482 /* AuthenticationViewModel.swift in Sources */,
 				778303832B8E965C0074FC37 /* RoadmapView.swift in Sources */,
 				77C8C4A92B913BE200F672DA /* SuccesfulPopupView.swift in Sources */,
 			);

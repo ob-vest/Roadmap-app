@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct RoadmapApp: App {
+    @State var authVM = AuthViewModel()
     var body: some Scene {
         WindowGroup {
             RoadmapView()
+                .environment(authVM)
         }
     }
 }
