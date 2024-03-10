@@ -80,7 +80,6 @@ struct RequestComment: Decodable, Identifiable {
                 self.showError(.invalidData)
             }
         }
-        //        comments.append(RequestComment(user: User(name: "You", isDeveloper: false), text: message, createdAt: Date()))
         message = ""
         completion(true)
     }

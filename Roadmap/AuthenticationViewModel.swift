@@ -8,6 +8,26 @@
 import SwiftUI
 import AuthenticationServices
 
+enum NetworkError: Error {
+    case invalidURL
+    case invalidResponse
+    case invalidData
+    case invalidUser
+
+    var errorDescription: String {
+        switch self {
+        case .invalidURL:
+            return "Invalid URL"
+        case .invalidResponse:
+            return "Invalid Response"
+        case .invalidData:
+            return "Invalid Data"
+        case .invalidUser:
+            return "Invalid User"
+        }
+    }
+}
+
 @Observable
 class SessionViewModel {
     struct User: Decodable {
@@ -46,11 +66,12 @@ class SessionViewModel {
     }
 
     func post<T: Encodable>(endpoint: String, body: T, completion: @escaping (Result<Data, Error>) -> Void) async {
-        guard let url = URL(string: "\(host)\(endpoint)") else { return }
+        guard let url = URL(string: "\(host)\(endpoint)") else { return completion(.failure(NetworkError.invalidURL)) }
+        guard let user = user else { return completion(.failure(NetworkError.invalidUser))}
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
+        request.setValue("Bearer " + user.authorizationToken, forHTTPHeaderField: "Authorization")
         do {
             let encoder = JSONEncoder()
             let data = try encoder.encode(body)
@@ -147,10 +168,6 @@ class AuthViewModel {
 }
 
 extension AuthViewModel {
-    enum NetworkError: Error {
-        case invalidURL
-
-    }
 
     enum AuthError: Error {
         case appleLoginFailed
