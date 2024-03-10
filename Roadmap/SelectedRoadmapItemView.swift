@@ -13,54 +13,90 @@ struct User: Identifiable {
     let name: String
     let isDeveloper: Bool
 }
-
-private struct Comment: Identifiable {
-    var id = UUID()
-    var user: User
-    var message: String
-    var date: Date
+struct SendComment: Encodable {
+    let requestId: Int
+    let comment: String
 }
-extension Comment {
-    static var mockArray: [Comment] = [
-        Comment(user: User(name: "John Doe", isDeveloper: false), message: "This is a great idea!", date: Date(timeIntervalSinceNow: -86400 * 2)),
-        Comment(user: User(name: "Jane Smith", isDeveloper: false), message: "I agree! But have we considered the cost?", date: Date(timeIntervalSinceNow: -86400)),
-        Comment(user: User(name: "Onur Bas", isDeveloper: true), message: "Looks good to me", date: Date(timeIntervalSinceNow: -3600 * 12)),
-        Comment(user: User(name: "Alex Johnson", isDeveloper: false), message: "Can someone clarify the last point?", date: Date()),
-        Comment(user: User(name: "Casey Kim", isDeveloper: false), message: "Absolutely brilliant! I'm all in.", date: Date(timeIntervalSinceNow: -3600 * 2)),
-        Comment(user: User(name: "Jordan Lee", isDeveloper: false), message: "I have some concerns about the timeline.", date: Date(timeIntervalSinceNow: -86400 * 5)),
-        Comment(user: User(name: "Chris Parker", isDeveloper: false), message: "Looks good to me.", date: Date(timeIntervalSinceNow: -3600 * 48)),
-        Comment(user: User(name: "Pat Taylor", isDeveloper: false), message: "I'm unsure, can we discuss this in our next meeting?", date: Date(timeIntervalSinceNow: -86400 * 7)),
-        Comment(user: User(name: "Jamie Morgan", isDeveloper: false), message: "Great initiative, let's make sure to allocate enough resources.", date: Date()),
-        Comment(user: User(name: "Sam Rivera", isDeveloper: false), message: "Has anyone looked into the potential risks?", date: Date(timeIntervalSinceNow: -86400 * 3)),
-        Comment(user: User(name: "Alexis Bailey", isDeveloper: false), message: "I agree with Jane, the cost is a major factor to consider.", date: Date(timeIntervalSinceNow: -3600 * 5)),
-        Comment(user: User(name: "Drew Jordan", isDeveloper: false), message: "This could really set us apart from the competition!", date: Date(timeIntervalSinceNow: -86400 * 4)),
-        Comment(user: User(name: "Taylor Quinn", isDeveloper: false), message: "I'll need more information before making a decision.", date: Date(timeIntervalSinceNow: -3600 * 72)),
-        Comment(user: User(name: "Jordan Casey", isDeveloper: false), message: "Can we ensure that this is sustainable in the long term?", date: Date()),
-        Comment(user: User(name: "Morgan Pat", isDeveloper: false), message: "Excited to see where this goes!", date: Date(timeIntervalSinceNow: -86400 * 6)),
-        Comment(user: User(name: "Rivera Sam", isDeveloper: false), message: "Let's not rush into this without more research.", date: Date(timeIntervalSinceNow: -3600 * 24)),
-        Comment(user: User(name: "Bailey Alexis", isDeveloper: false), message: "I'm on board with the idea, pending budget review.", date: Date()),
-        Comment(user: User(name: "Jordan Drew", isDeveloper: false), message: "This initiative could really benefit from more diverse perspectives.", date: Date(timeIntervalSinceNow: -86400 * 1)),
-        Comment(user: User(name: "Quinn Taylor", isDeveloper: false), message: "I'm excited, but let's plan carefully.", date: Date(timeIntervalSinceNow: -3600 * 12))
-    ]
+struct RequestComment: Decodable, Identifiable {
+    let id: Int
+    let userId: Int
+    let text: String
+    let createdAt: Date
+    let isDeveloper: Bool
 }
+// private struct RequestComment: Identifiable {
+//    var id = UUID()
+//    var user: User
+//    var text: String
+//    var createdAt: Date
+// }
+// extension RequestComment {
+//    static var mockArray: [RequestComment] = [
+//        RequestComment(user: User(name: "John Doe", isDeveloper: false), text: "This is a great idea!", createdAt: Date(timeIntervalSinceNow: -86400 * 2)),
+//        RequestComment(user: User(name: "Jane Smith", isDeveloper: false), text: "I agree! But have we considered the cost?", createdAt: Date(timeIntervalSinceNow: -86400)),
+//        RequestComment(user: User(name: "Onur Bas", isDeveloper: true), text: "Looks good to me", createdAt: Date(timeIntervalSinceNow: -3600 * 12)),
+//        RequestComment(user: User(name: "Alex Johnson", isDeveloper: false), text: "Can someone clarify the last point?", createdAt: Date()),
+//        RequestComment(user: User(name: "Casey Kim", isDeveloper: false), text: "Absolutely brilliant! I'm all in.", createdAt: Date(timeIntervalSinceNow: -3600 * 2)),
+//        RequestComment(user: User(name: "Jordan Lee", isDeveloper: false), text: "I have some concerns about the timeline.", createdAt: Date(timeIntervalSinceNow: -86400 * 5)),
+//        RequestComment(user: User(name: "Chris Parker", isDeveloper: false), text: "Looks good to me.", createdAt: Date(timeIntervalSinceNow: -3600 * 48)),
+//        RequestComment(user: User(name: "Pat Taylor", isDeveloper: false), text: "I'm unsure, can we discuss this in our next meeting?", createdAt: Date(timeIntervalSinceNow: -86400 * 7)),
+//        RequestComment(user: User(name: "Jamie Morgan", isDeveloper: false), text: "Great initiative, let's make sure to allocate enough resources.", createdAt: Date()),
+//        RequestComment(user: User(name: "Sam Rivera", isDeveloper: false), text: "Has anyone looked into the potential risks?", createdAt: Date(timeIntervalSinceNow: -86400 * 3)),
+//        RequestComment(user: User(name: "Alexis Bailey", isDeveloper: false), text: "I agree with Jane, the cost is a major factor to consider.", createdAt: Date(timeIntervalSinceNow: -3600 * 5)),
+//        RequestComment(user: User(name: "Drew Jordan", isDeveloper: false), text: "This could really set us apart from the competition!", createdAt: Date(timeIntervalSinceNow: -86400 * 4)),
+//        RequestComment(user: User(name: "Taylor Quinn", isDeveloper: false), text: "I'll need more information before making a decision.", createdAt: Date(timeIntervalSinceNow: -3600 * 72)),
+//        RequestComment(user: User(name: "Jordan Casey", isDeveloper: false), text: "Can we ensure that this is sustainable in the long term?", createdAt: Date()),
+//        RequestComment(user: User(name: "Morgan Pat", isDeveloper: false), text: "Excited to see where this goes!", createdAt: Date(timeIntervalSinceNow: -86400 * 6)),
+//        RequestComment(user: User(name: "Rivera Sam", isDeveloper: false), text: "Let's not rush into this without more research.", createdAt: Date(timeIntervalSinceNow: -3600 * 24)),
+//        RequestComment(user: User(name: "Bailey Alexis", isDeveloper: false), text: "I'm on board with the idea, pending budget review.", createdAt: Date()),
+//        RequestComment(user: User(name: "Jordan Drew", isDeveloper: false), text: "This initiative could really benefit from more diverse perspectives.", createdAt: Date(timeIntervalSinceNow: -86400 * 1)),
+//        RequestComment(user: User(name: "Quinn Taylor", isDeveloper: false), text: "I'm excited, but let's plan carefully.", createdAt: Date(timeIntervalSinceNow: -3600 * 12))
+//    ]
+// }
 
 @Observable class CommentViewModel {
-    fileprivate var comments: [Comment] = []
+    fileprivate var comments: [RequestComment] = []
 
     private(set) var commentError: NetworkError?
+    var isLoading: Bool = true
+    let requestId: Int
 
     var showError: Bool = false
 
     var message: String = ""
-    func sendComment(completion: @escaping (Bool) -> Void) {
+
+    init(requestId: Int) {
+        self.requestId = requestId
+    }
+    @MainActor func sendComment(completion: @escaping (Bool) -> Void) async {
         guard isCommentValid() else { return completion(false) }
-        comments.append(Comment(user: User(name: "You", isDeveloper: false), message: message, date: Date()))
+        let body = SendComment(requestId: requestId, comment: message)
+        await SessionViewModel.shared.post(endpoint: "requests/\(requestId)/comments", body: body) { (result: Result<Data, Error>) in
+            switch result {
+            case .success:
+                Task { await self.fetchComments() } // Fetch comments after sending
+            case .failure(let error):
+                print(error)
+                self.showError(.invalidData)
+            }
+        }
+        //        comments.append(RequestComment(user: User(name: "You", isDeveloper: false), text: message, createdAt: Date()))
         message = ""
         completion(true)
     }
-    func fetchComments() {
-        comments = Comment.mockArray
-        //        showError(.invalidData)
+    @MainActor func fetchComments() async {
+
+        //        comments = RequestComment.mockArray
+        await SessionViewModel.shared.fetch(endpoint: "requests/\(requestId)/comments") { (result: Result<[RequestComment], Error>) in
+            switch result {
+            case .success(let comments):
+                self.comments = comments
+            case .failure(let error):
+                print(error)
+                self.showError(.invalidData)
+            }
+        }
+        isLoading = false
     }
     func showError(_ error: NetworkError) {
         commentError = error
@@ -91,7 +127,12 @@ struct SelectedRoadmapItemView: View {
     let request: RequestModel
     @FocusState private var isFocused: Bool
     @Environment(\.horizontalSizeClass) var sizeClass
-    @State var commentVM = CommentViewModel()
+    @State var commentVM: CommentViewModel
+
+    init(request: RequestModel) {
+        self.request = request
+        self._commentVM = State(wrappedValue: CommentViewModel(requestId: request.id))
+    }
     var body: some View {
         Group {
             switch sizeClass {
@@ -111,7 +152,7 @@ struct SelectedRoadmapItemView: View {
         }
         .scrollDismissesKeyboard(.immediately)
         .task {
-            commentVM.fetchComments()
+            await commentVM.fetchComments()
         }
         .alert("Error", isPresented: $commentVM.showError) {
             Button("OK", role: .cancel) { }
@@ -202,7 +243,7 @@ extension SelectedRoadmapItemView {
                 )
                 .focused($isFocused)
 
-            Button {commentVM.sendComment(completion: { isFocused = !$0 })} label: {
+            Button { Task { await commentVM.sendComment(completion: { isFocused = !$0 })} } label: {
                 Image(systemName: "paperplane.fill")
 
                     .padding(.vertical, 10)
@@ -315,7 +356,12 @@ private struct ChatView: View {
 
     @Bindable var commentVM: CommentViewModel
     var body: some View {
-        if commentVM.comments.isEmpty {
+
+        if commentVM.isLoading {
+            ProgressView()
+                .progressViewStyle(.circular)
+                .padding(.bottom, 90) // bottom padding for keyboard overlay
+        } else if commentVM.comments.isEmpty {
             ContentUnavailableView {
                 Label("No comments yet", systemImage: "bubble.left.and.bubble.right")
             } description: {
@@ -336,15 +382,15 @@ private struct ChatView: View {
 }
 
 private struct ChatBubble: View {
-    var comment: Comment
+    var comment: RequestComment
 
     var body: some View {
 
         VStack(alignment: .leading, spacing: 5) {
             HStack {
                 HStack {
-                    Text(comment.user.name)
-                    if comment.user.isDeveloper {
+                    Text("UserID: \(comment.userId)")
+                    if comment.isDeveloper {
                         Text("DEVELOPER")
                             .fontDesign(.monospaced)
                             .font(.system(size: 8))
@@ -352,14 +398,14 @@ private struct ChatBubble: View {
                     }
                 }
                 .font(.caption2)
-                .foregroundStyle( comment.user.isDeveloper ? .blue : .secondary)
+                .foregroundStyle( comment.isDeveloper ? .blue : .secondary)
                 Spacer()
-                Text(comment.date.formatRelativeTime())
+                Text(comment.createdAt.formatRelativeTime())
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
             }
 
-            Text(comment.message)
+            Text(comment.text)
 
                 .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -370,7 +416,7 @@ private struct ChatBubble: View {
             Color(.secondarySystemBackground)
                 .overlay(
                     Group {
-                        if comment.user.isDeveloper {
+                        if comment.isDeveloper {
                             RoundedRectangle(cornerRadius: 15)
                                 .strokeBorder(Color(.tintColor), lineWidth: 2)
                         }

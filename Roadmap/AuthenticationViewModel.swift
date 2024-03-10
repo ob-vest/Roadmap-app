@@ -28,19 +28,9 @@ class SessionViewModel {
                 request.setValue("Bearer " + user.authorizationToken, forHTTPHeaderField: "Authorization")
             }
             let (data, response) = try await URLSession.shared.data(for: request)
-            // Attempt to cast the URLResponse to an HTTPURLResponse to access headers
-            if let httpResponse = response as? HTTPURLResponse {
 
-                // Check for a new authorization token in the response headers
-                if let newToken = httpResponse.allHeaderFields["Authorization"] as? String {
-                    // Optional: You might want to do some formatting or validation on the newToken before using it
+            getAuthorizationHeader(response: response)
 
-                    // Update the user's authorization token with the new value
-                    self.user?.authorizationToken = newToken
-
-                    // Note: Depending on your token format, you might need to remove any prefix (e.g., "Bearer ")
-                }
-            }
             dump(data)
             let decoder = JSONDecoder()
             let dateFormatter = DateFormatter()
@@ -53,6 +43,42 @@ class SessionViewModel {
             completion(.failure(error))
         }
 
+    }
+
+    func post<T: Encodable>(endpoint: String, body: T, completion: @escaping (Result<Data, Error>) -> Void) async {
+        guard let url = URL(string: "\(host)\(endpoint)") else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        do {
+            let encoder = JSONEncoder()
+            let data = try encoder.encode(body)
+            request.httpBody = data
+            let (responseData, response) = try await URLSession.shared.data(for: request)
+
+            getAuthorizationHeader(response: response)
+
+            completion(.success(responseData))
+        } catch {
+            completion(.failure(error))
+        }
+    }
+
+}
+
+extension SessionViewModel {
+    func getAuthorizationHeader(response: URLResponse) {
+        guard let httpResponse = response as? HTTPURLResponse else { return }
+        // Check for a new authorization token in the response headers
+        if let newToken = httpResponse.allHeaderFields["Authorization"] as? String {
+            // Optional: You might want to do some formatting or validation on the newToken before using it
+
+            // Update the user's authorization token with the new value
+            self.user?.authorizationToken = newToken
+
+            // Note: Depending on your token format, you might need to remove any prefix (e.g., "Bearer ")
+        }
     }
 }
 
