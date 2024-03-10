@@ -7,6 +7,70 @@
 
 import SwiftUI
 
+struct RequestModel: Codable, Identifiable {
+    let id: Int
+    let title: String
+    let description: String
+    let stateId: Int
+    let typeId: Int
+
+    let createdAt: Date
+    let lastActivityAt: Date
+    var upvoteCount: Int
+    var commentCount: Int
+}
+extension RequestModel {
+
+    var state: RequestState? {
+        return RequestState(rawValue: stateId)
+    }
+
+    var type: RequestType? {
+        return RequestType(rawValue: typeId)
+    }
+    var stateString: String {
+        return state?.description ?? "Unknown"
+    }
+
+    var typeString: String {
+        return type?.description ?? "Unknown"
+    }
+    enum RequestState: Int, Codable {
+        case pending = 1
+        case approved = 2
+        case rejected = 3
+        case planned = 4
+        case inProgress = 5
+        case completed = 6
+
+        var description: String {
+            switch self {
+            case .pending: return "Pending"
+            case .approved: return "Approved"
+            case .rejected: return "Rejected"
+            case .planned: return "Planned"
+            case .inProgress: return "In Progress"
+            case .completed: return "Completed"
+            }
+        }
+    }
+
+    enum RequestType: Int, Codable {
+        case feature = 1
+        case bug = 2
+        case enhancement = 3
+
+        var description: String {
+            switch self {
+            case .feature: return "Feature"
+            case .bug: return "Bug"
+            case .enhancement: return "Enhancement"
+            }
+        }
+    }
+
+}
+
 struct RoadmapSubject: Identifiable {
     let id: UUID = UUID()
     let title: String
@@ -14,8 +78,8 @@ struct RoadmapSubject: Identifiable {
     var totalUpvotes: Int
     let tag: Tag
     let status: Status
-    let creationDate: Date = Date()
-    let lastCommentDate: Date = Date()
+    let createdAt: Date = Date()
+    let lastActivityAt: Date = Date()
     var didUpvote: Bool = false {
         didSet {
             if didUpvote == true {
@@ -54,7 +118,7 @@ extension RoadmapSubject {
     ]
 }
 struct RoadmapListItemView: View {
-    let subject: RoadmapSubject
+    let request: RequestModel
     var body: some View {
 
         HStack(spacing: 15) {
@@ -62,15 +126,15 @@ struct RoadmapListItemView: View {
             VStack(spacing: 5) {
                 Image(systemName: "chevron.up")
 
-                Text("\(subject.totalUpvotes)")
+                Text("\(request.upvoteCount)")
             }
             .font(.title3)
-            .foregroundStyle(Color(subject.didUpvote ? .tintColor : .label))
+//            .foregroundStyle(Color(subject.didUpvote ? .tintColor : .label))
             VStack(spacing: 10) {
 
                 VStack(alignment: .leading) {
-                    Text(subject.title)
-                    Text(subject.description)
+                    Text(request.title)
+                    Text(request.description)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     Spacer(minLength: 0)
@@ -85,11 +149,11 @@ struct RoadmapListItemView: View {
     }
 }
 
-#Preview {
-    ScrollView {
-        RoadmapListItemView(subject: RoadmapSubject.mock)
-        RoadmapListItemView(subject: RoadmapSubject.mock)
-        RoadmapListItemView(subject: RoadmapSubject.mock)
-    }
-    .padding(.horizontal)
-}
+// #Preview {
+//    ScrollView {
+//        RoadmapListItemView(subject: RoadmapSubject.mock)
+//        RoadmapListItemView(subject: RoadmapSubject.mock)
+//        RoadmapListItemView(subject: RoadmapSubject.mock)
+//    }
+//    .padding(.horizontal)
+// }

@@ -88,7 +88,7 @@ extension CommentViewModel {
 }
 
 struct SelectedRoadmapItemView: View {
-    let subject: RoadmapSubject
+    let request: RequestModel
     @FocusState private var isFocused: Bool
     @Environment(\.horizontalSizeClass) var sizeClass
     @State var commentVM = CommentViewModel()
@@ -105,7 +105,7 @@ struct SelectedRoadmapItemView: View {
 
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Text(subject.status.rawValue)
+                Text(request.stateString)
                     .foregroundStyle(.secondary)
             }
         }
@@ -172,11 +172,11 @@ extension SelectedRoadmapItemView {
     var mainView: some View {
         VStack(alignment: .leading) {
 
-            SubjectInfoView()
+            SubjectInfoView(request: request)
                 .padding(.top, 3)
             DeveloperNoteView()
                 .padding(.vertical)
-            UpvoteButton(subject: subject)
+            UpvoteButton(request: request)
 
             //            .frame(maxWidth: .infinity, alignment: .trailing)
 
@@ -224,10 +224,10 @@ extension SelectedRoadmapItemView {
 }
 extension SelectedRoadmapItemView {
     struct UpvoteButton: View {
-        let subject: RoadmapSubject
+        let request: RequestModel
         @Environment(RoadmapViewModel.self) var roadmapVM
         var body: some View {
-            Button { roadmapVM.upvote(subject: subject) } label: {
+            Button { /*roadmapVM.upvote(subject: subject)*/ } label: {
                 //            HStack {
                 //                Image(systemName: "arrowshape.up.fill")
                 //
@@ -239,37 +239,42 @@ extension SelectedRoadmapItemView {
                 //                .cornerRadius(20))
                 HStack {
                     Image(systemName: "arrowshape.up.fill")
-                        .changeEffect(.spray {
-                            Image(systemName: "arrowshape.up.fill")
-                        }, value: subject.didUpvote, isEnabled: !subject.didUpvote)
-                        .changeEffect(.spray {
-                            Text("\(subject.totalUpvotes)")
-                        }, value: subject.didUpvote, isEnabled: !subject.didUpvote)
+                    //                        .changeEffect(.spray {
+                    //                            Image(systemName: "arrowshape.up.fill")
+                    //                        }, value: request.didUpvote, isEnabled: !request.didUpvote)
+                    //                        .changeEffect(.spray {
+                    //                            Text("\(request.upvoteCount)")
+                    //                        }, value: request.didUpvote, isEnabled: !request.didUpvote)
 
-                    Text("\(subject.totalUpvotes)")
+                    Text("\(request.upvoteCount)")
                 }
                 .bold()
                 .padding(.vertical, 10)
                 .padding(.horizontal, 20)
-                .foregroundStyle(Color(subject.didUpvote ? .tintColor : .gray))
-                .background(Color(subject.didUpvote ? .tintColor : .gray)
+                .foregroundStyle(Color(.gray))
+                .background(Color(.gray)
                     .cornerRadius(20)
                     .opacity(0.2)
                 )
+                //                .foregroundStyle(Color(request.didUpvote ? .tintColor : .gray))
+                //                .background(Color(request.didUpvote ? .tintColor : .gray)
+                //                    .cornerRadius(20)
+                //                    .opacity(0.2)
+                //                )
 
             }
         }
     }
     struct SubjectInfoView: View {
-        let subject: RoadmapSubject = .mock
+        let request: RequestModel
         var body: some View {
             VStack(alignment: .leading, spacing: 10) {
 
                 VStack(alignment: .leading) {
-                    Text(subject.title)
+                    Text(request.title)
                         .font(.title2)
 
-                    Text(subject.tag.rawValue)
+                    Text(request.typeString)
                         .font(.caption)
                         .bold()
                         .foregroundStyle(.green)
@@ -279,7 +284,7 @@ extension SelectedRoadmapItemView {
                             .overlay( RoundedRectangle(cornerRadius: 10).stroke(Color(.systemGreen), lineWidth: 1)))
                         .cornerRadius(10)
                 }
-                Text("Roadmap item is planned to be implemented in the next sprint. We are currently working on the design and architecture of the feature. We will keep you updated on the progress. Roadmap item is planned to be implemented in the next sprint. We are currently working on the design and architecture of the feature. We will keep you updated on the progress.")
+                Text(request.description)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -376,11 +381,11 @@ private struct ChatBubble: View {
     }
 }
 
-#Preview {
-
-    NavigationStack {
-        SelectedRoadmapItemView(subject: RoadmapSubject.mock)
-            .navigationBarTitleDisplayMode(.inline)
-    }
-    .environment(RoadmapViewModel())
-}
+// #Preview {
+//
+//    NavigationStack {
+//        SelectedRoadmapItemView(subject: RoadmapSubject.mock)
+//            .navigationBarTitleDisplayMode(.inline)
+//    }
+//    .environment(RoadmapViewModel())
+// }

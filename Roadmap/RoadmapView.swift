@@ -9,7 +9,7 @@ import SwiftUI
 
 @Observable class RoadmapViewModel {
     var subjects: [RoadmapSubject] = RoadmapSubject.mockArray
-
+    var requests: [RequestModel] = []
     var selectedSortCriteria: SortCriteria = .upvotes {
         didSet {
             sortSubjects(by: selectedSortCriteria)
@@ -25,11 +25,21 @@ import SwiftUI
         subjects[index].didUpvote.toggle()
 
     }
-
+    func fetchRequests() async {
+        await SessionViewModel.shared.fetch(endpoint: "requests") { (result: Result<[RequestModel], Error>) in
+            switch result {
+            case .success(let requestData):
+                print(requestData)
+                self.requests = requestData
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
     func sortSubjects(by criteria: SortCriteria) {
         switch criteria {
         case .newest:
-            subjects.sort { $0.creationDate < $1.creationDate }
+            subjects.sort { $0.createdAt < $1.createdAt }
         case .upvotes:
             subjects.sort { $0.totalUpvotes > $1.totalUpvotes }
         default:
@@ -65,21 +75,33 @@ struct RoadmapView: View {
             ScrollView {
                 sortMenu
                 LazyVGrid(columns: sizeClass == .compact ? compactColumns : regularColumns, spacing: 15) {
-                    ForEach(roadmapVM.subjects) { subject in
-                        NavigationLink(destination: SelectedRoadmapItemView(subject: subject)) {
-                            RoadmapListItemView(subject: subject)
+                    ForEach(roadmapVM.requests) { request in
+                        NavigationLink(destination: SelectedRoadmapItemView(request: request)) {
+                            RoadmapListItemView(request: request)
                                 .padding(.horizontal)
                         }
                         .buttonStyle(.plain)
-
                     }
+//                    ForEach(roadmapVM.subjects) { request in
+//                        NavigationLink(destination: SelectedRoadmapItemView(subject: subject)) {
+//                            RoadmapListItemView(subject: subject)
+//                                .padding(.horizontal)
+//                        }
+//                        .buttonStyle(.plain)
+
+//                    }
 
                 }
 
             }
-
+            .task {
+                await roadmapVM.fetchRequests()
+                print(roadmapVM.requests)
+            }
             .refreshable {
                 print("Refreshed")
+                await roadmapVM.fetchRequests()
+                print(roadmapVM.requests)
             }
             .sheet(isPresented: $openNewRequest) {
                 NewRequestView()

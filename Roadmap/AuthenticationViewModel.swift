@@ -9,8 +9,56 @@ import SwiftUI
 import AuthenticationServices
 
 @Observable
-class AuthViewModel {
+class SessionViewModel {
+    struct User: Decodable {
+        var appleUserId: String
+        var authorizationToken: String
+    }
+    static let shared = SessionViewModel() // Singleton instance for global access
     var user: User?
+    let host = "https://roadmap-apiservice-production.up.railway.app/api/"
+
+    func fetch<T: Decodable>(endpoint: String, completion: @escaping (Result<T, Error>) -> Void) async {
+
+        guard let url = URL(string: "\(host)\(endpoint)") else { return }
+        do {
+            var request = URLRequest(url: url)
+
+            if let user = user {
+                request.setValue("Bearer " + user.authorizationToken, forHTTPHeaderField: "Authorization")
+            }
+            let (data, response) = try await URLSession.shared.data(for: request)
+            // Attempt to cast the URLResponse to an HTTPURLResponse to access headers
+            if let httpResponse = response as? HTTPURLResponse {
+
+                // Check for a new authorization token in the response headers
+                if let newToken = httpResponse.allHeaderFields["Authorization"] as? String {
+                    // Optional: You might want to do some formatting or validation on the newToken before using it
+
+                    // Update the user's authorization token with the new value
+                    self.user?.authorizationToken = newToken
+
+                    // Note: Depending on your token format, you might need to remove any prefix (e.g., "Bearer ")
+                }
+            }
+            dump(data)
+            let decoder = JSONDecoder()
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+            decoder.dateDecodingStrategy = .formatted(dateFormatter)
+
+            let result = try decoder.decode(T.self, from: data)
+            completion(.success(result))
+        } catch {
+            completion(.failure(error))
+        }
+
+    }
+}
+
+@Observable
+class AuthViewModel {
+//    var user: User?
     let host = "https://roadmap-apiservice-production.up.railway.app"
 
     func configurationRequest(_ request: ASAuthorizationAppleIDRequest) {
@@ -28,10 +76,12 @@ class AuthViewModel {
         do {
             let (data, _) = try await URLSession.shared.data(for: request)
 
-            let result = try JSONDecoder().decode(User.self, from: data)
-
-            user = result
-            dump(user)
+            let result = try JSONDecoder().decode(SessionViewModel.User.self, from: data)
+            print("Fetching user successful.")
+            SessionViewModel.shared.user = result
+            dump(SessionViewModel.shared.user)
+//            user = result
+//            dump(user)
         } catch {
             print("FAILED")
         }
@@ -71,10 +121,6 @@ class AuthViewModel {
 }
 
 extension AuthViewModel {
-    struct User: Decodable {
-        var appleUserId: String
-        var authorizationToken: String
-    }
     enum NetworkError: Error {
         case invalidURL
 
@@ -82,7 +128,7 @@ extension AuthViewModel {
 
     enum AuthError: Error {
         case appleLoginFailed
-        case loginFailedVeritfication
+        case loginFailedVerification
 
         //            var localizedDescription: String {
         //                switch self {

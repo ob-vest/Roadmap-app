@@ -11,10 +11,10 @@ import AuthenticationServices
 struct ContentView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(AuthViewModel.self) var authVM
-
+    @Environment(SessionViewModel.self) var sessionVM
     var body: some View {
         VStack {
-            if let user = authVM.user {
+            if let user = sessionVM.user {
                 Text("User ID: \(user.appleUserId)")
                 Text("Token: \(user.authorizationToken)")
             }
@@ -24,9 +24,9 @@ struct ContentView: View {
         }
         .padding()
         .onAppear {
-//            getCredentialState(forUserID: authVM.id) { result, err in
-//                <#code#>
-//            }
+            //            getCredentialState(forUserID: authVM.id) { result, err in
+            //                <#code#>
+            //            }
         }
     }
 }
