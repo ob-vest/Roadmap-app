@@ -14,6 +14,8 @@
 		773BF3552B8E153A00DA78AC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 773BF3542B8E153A00DA78AC /* ContentView.swift */; };
 		773BF3572B8E153B00DA78AC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 773BF3562B8E153B00DA78AC /* Assets.xcassets */; };
 		773BF35B2B8E153B00DA78AC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 773BF35A2B8E153B00DA78AC /* Preview Assets.xcassets */; };
+		77604B592B9E301800C7BB0D /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 77604B582B9E301800C7BB0D /* KeychainAccess */; };
+		77604B5B2B9E322800C7BB0D /* KeychainStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77604B5A2B9E322800C7BB0D /* KeychainStorage.swift */; };
 		778303812B8E88ED0074FC37 /* RoadmapListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778303802B8E88ED0074FC37 /* RoadmapListItemView.swift */; };
 		778303832B8E965C0074FC37 /* RoadmapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778303822B8E965C0074FC37 /* RoadmapView.swift */; };
 		778303852B8EA39F0074FC37 /* SelectedRoadmapItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778303842B8EA39F0074FC37 /* SelectedRoadmapItemView.swift */; };
@@ -30,6 +32,7 @@
 		773BF3562B8E153B00DA78AC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		773BF3582B8E153B00DA78AC /* Roadmap.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Roadmap.entitlements; sourceTree = "<group>"; };
 		773BF35A2B8E153B00DA78AC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		77604B5A2B9E322800C7BB0D /* KeychainStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStorage.swift; sourceTree = "<group>"; };
 		778303802B8E88ED0074FC37 /* RoadmapListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadmapListItemView.swift; sourceTree = "<group>"; };
 		778303822B8E965C0074FC37 /* RoadmapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoadmapView.swift; sourceTree = "<group>"; };
 		778303842B8EA39F0074FC37 /* SelectedRoadmapItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedRoadmapItemView.swift; sourceTree = "<group>"; };
@@ -42,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				77604B592B9E301800C7BB0D /* KeychainAccess in Frameworks */,
 				77067C922B9007CD00D00296 /* Pow in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -85,6 +89,7 @@
 				77067C8E2B8FECAA00D00296 /* NewRequestView.swift */,
 				77C8C4A82B913BE200F672DA /* SuccesfulPopupView.swift */,
 				E34186792B9B1165008A5482 /* AuthenticationViewModel.swift */,
+				77604B5A2B9E322800C7BB0D /* KeychainStorage.swift */,
 				773BF3562B8E153B00DA78AC /* Assets.xcassets */,
 				773BF3582B8E153B00DA78AC /* Roadmap.entitlements */,
 				773BF3592B8E153B00DA78AC /* Preview Content */,
@@ -119,6 +124,7 @@
 			name = Roadmap;
 			packageProductDependencies = (
 				77067C912B9007CD00D00296 /* Pow */,
+				77604B582B9E301800C7BB0D /* KeychainAccess */,
 			);
 			productName = Roadmap;
 			productReference = 773BF34F2B8E153A00DA78AC /* Roadmap.app */;
@@ -150,6 +156,7 @@
 			mainGroup = 773BF3462B8E153A00DA78AC;
 			packageReferences = (
 				77067C902B9007CD00D00296 /* XCRemoteSwiftPackageReference "Pow" */,
+				77604B572B9E301800C7BB0D /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 			);
 			productRefGroup = 773BF3502B8E153A00DA78AC /* Products */;
 			projectDirPath = "";
@@ -206,6 +213,7 @@
 				77067C8F2B8FECAA00D00296 /* NewRequestView.swift in Sources */,
 				778303812B8E88ED0074FC37 /* RoadmapListItemView.swift in Sources */,
 				E341867A2B9B1165008A5482 /* AuthenticationViewModel.swift in Sources */,
+				77604B5B2B9E322800C7BB0D /* KeychainStorage.swift in Sources */,
 				778303832B8E965C0074FC37 /* RoadmapView.swift in Sources */,
 				77C8C4A92B913BE200F672DA /* SuccesfulPopupView.swift in Sources */,
 			);
@@ -440,6 +448,14 @@
 				minimumVersion = 1.0.3;
 			};
 		};
+		77604B572B9E301800C7BB0D /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -447,6 +463,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 77067C902B9007CD00D00296 /* XCRemoteSwiftPackageReference "Pow" */;
 			productName = Pow;
+		};
+		77604B582B9E301800C7BB0D /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 77604B572B9E301800C7BB0D /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

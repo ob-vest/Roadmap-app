@@ -35,7 +35,16 @@ class SessionViewModel {
         var authorizationToken: String
     }
     static let shared = SessionViewModel() // Singleton instance for global access
-    var user: User?
+    var user: User? = KeychainStorage.loadUser() {
+        didSet {
+            if let user = user {
+                if KeychainStorage.loadUser() == nil {
+                    KeychainStorage.save(user.appleUserId, forKey: .appleUserId)
+                    KeychainStorage.save(user.authorizationToken, forKey: .authorizationToken)
+                }
+            }
+        }
+    }
     let host = "https://roadmap-apiservice-production.up.railway.app/api/"
 
     func fetch<T: Decodable>(endpoint: String, completion: @escaping (Result<T, Error>) -> Void) async {
