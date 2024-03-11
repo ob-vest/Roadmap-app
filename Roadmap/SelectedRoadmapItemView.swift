@@ -8,11 +8,6 @@
 import SwiftUI
 import Pow
 
-struct User: Identifiable {
-    let id = UUID()
-    let name: String
-    let isDeveloper: Bool
-}
 struct SendComment: Encodable {
     let requestId: Int
     let comment: String
@@ -133,7 +128,7 @@ struct SelectedRoadmapItemView: View {
         self._commentVM = State(wrappedValue: CommentViewModel(requestId: request.id))
     }
     var body: some View {
-        Group {
+        VStack(spacing: 0) {
             switch sizeClass {
 
             case .compact: compactLayout
@@ -141,6 +136,7 @@ struct SelectedRoadmapItemView: View {
 
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .navigationBarTitleDisplayMode(.inline)
 
         .toolbar {
@@ -355,28 +351,30 @@ private struct ChatView: View {
 
     @Bindable var commentVM: CommentViewModel
     var body: some View {
-
-        if commentVM.isLoading {
-            ProgressView()
-                .progressViewStyle(.circular)
-                .padding(.bottom, 90) // bottom padding for keyboard overlay
-        } else if commentVM.comments.isEmpty {
-            ContentUnavailableView {
-                Label("No comments yet", systemImage: "bubble.left.and.bubble.right")
-            } description: {
-                Text("Be the first to comment")
-            }
-            .padding(.bottom, 90) // bottom padding for keyboard overlay
-        } else {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 12) {
-                    ForEach(commentVM.comments) { comment in
-                        ChatBubble(comment: comment)
-                    }
+        Group {
+            if commentVM.isLoading {
+                ProgressView()
+                    .progressViewStyle(.circular)
+                    .padding(.bottom, 90) // bottom padding for keyboard overlay
+            } else if commentVM.comments.isEmpty {
+                ContentUnavailableView {
+                    Label("No comments yet", systemImage: "bubble.left.and.bubble.right")
+                } description: {
+                    Text("Be the first to comment")
                 }
                 .padding(.bottom, 90) // bottom padding for keyboard overlay
+            } else {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 12) {
+                        ForEach(commentVM.comments) { comment in
+                            ChatBubble(comment: comment)
+                        }
+                    }
+                    .padding(.bottom, 90) // bottom padding for keyboard overlay
+                }
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 }
 

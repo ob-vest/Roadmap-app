@@ -16,9 +16,6 @@ import SwiftUI
         }
     }
 
-    init() {
-        sortSubjects(by: selectedSortCriteria)
-    }
     func upvote(subject: RoadmapSubject) {
         guard let index = subjects.firstIndex(where: { $0.id == subject.id }) else { return }
 
@@ -31,6 +28,7 @@ import SwiftUI
             case .success(let requestData):
                 print(requestData)
                 self.requests = requestData
+                self.sortSubjects(by: self.selectedSortCriteria)
             case .failure(let error):
                 print(error)
             }
@@ -39,11 +37,11 @@ import SwiftUI
     func sortSubjects(by criteria: SortCriteria) {
         switch criteria {
         case .newest:
-            subjects.sort { $0.createdAt < $1.createdAt }
+            requests.sort { $0.createdAt > $1.createdAt }
         case .upvotes:
-            subjects.sort { $0.totalUpvotes > $1.totalUpvotes }
-        default:
-            print("Not implemented yet")
+            requests.sort { $0.upvoteCount > $1.upvoteCount }
+        case .recentActivity:
+            requests.sort { $0.lastActivityAt > $1.lastActivityAt }
         }
 
     }
@@ -95,13 +93,13 @@ struct RoadmapView: View {
 
             }
             .task {
-                await roadmapVM.fetchRequests()
-                print(roadmapVM.requests)
+                if roadmapVM.requests.isEmpty {
+                    await roadmapVM.fetchRequests()
+                }
             }
             .refreshable {
                 print("Refreshed")
                 await roadmapVM.fetchRequests()
-                print(roadmapVM.requests)
             }
             .sheet(isPresented: $openNewRequest) {
                 NewRequestView()

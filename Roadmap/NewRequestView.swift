@@ -8,14 +8,18 @@
 import SwiftUI
 
 @Observable class NewRequestVM {
-
+    struct NewRequest: Encodable {
+        var title: String
+        var description: String
+        var typeId: Int
+    }
     let tags: [RoadmapSubject.Tag] = RoadmapSubject.Tag.allCases
 
     var selectedTag: RoadmapSubject.Tag = .feature
     var title: String = ""
     var description: String = ""
 
-    func submitRequest(_ dismiss: DismissAction) {
+    @MainActor func submitRequest(_ dismiss: DismissAction) async {
 
         print("Submitting the request...")
         print("Title: \(title)")
@@ -23,6 +27,16 @@ import SwiftUI
         print("Description: \(description)")
         print("--------------------")
         print("Tag: \(selectedTag.rawValue)")
+        let newRequest = NewRequest(title: title, description: description, typeId: 1)
+
+        await SessionViewModel.shared.post(endpoint: "requests", body: newRequest) { (result: Result<Data, Error>) in
+            switch result {
+            case .success(let request):
+                print("Posted succesfully: \(request)")
+            case .failure(let error):
+                print(error)
+            }
+        }
 
         dismiss()
     }
@@ -81,7 +95,7 @@ struct NewRequestView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
 
                     Button("Submit") {
-                        requestVM.submitRequest(dismiss)
+                        Task { await requestVM.submitRequest(dismiss) }
                     }
                     .disabled(requestVM.isSubmitButtonDisabled)
 
