@@ -13,7 +13,15 @@ struct RequestModel: Codable, Identifiable {
     let description: String
     let stateId: Int
     let typeId: Int
-
+    var didUpvote: Bool {
+        didSet {
+            if didUpvote == true {
+                upvoteCount += 1
+            } else {
+                upvoteCount -= 1
+            }
+        }
+    }
     let createdAt: Date
     let lastActivityAt: Date
     var upvoteCount: Int
@@ -138,7 +146,7 @@ struct RoadmapListItemView: View {
                 Text("\(request.upvoteCount)")
             }
             .font(.title3)
-            //            .foregroundStyle(Color(subject.didUpvote ? .tintColor : .label))
+            .foregroundStyle(Color(request.didUpvote ? .tintColor : .label))
             VStack(spacing: 10) {
 
                 VStack(alignment: .leading) {

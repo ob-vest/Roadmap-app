@@ -16,10 +16,24 @@ import SwiftUI
         }
     }
 
-    func upvote(subject: RoadmapSubject) {
-        guard let index = subjects.firstIndex(where: { $0.id == subject.id }) else { return }
+    func upvote(request: RequestModel) {
+        Task {
+            struct SendUpvote: Encodable {
+                let requestId: Int
+            }
+            guard let index = requests.firstIndex(where: { $0.id == request.id }) else { return print("Request not found")}
 
-        subjects[index].didUpvote.toggle()
+            await SessionViewModel.shared.post(endpoint: "requests/\(request.id)/upvote", body: SendUpvote(requestId: request.id)) { (result: Result<Data, Error>) in
+                switch result {
+                case .success:
+                    print("Upvote sent")
+                    self.requests[index].didUpvote.toggle()
+                case .failure(let error):
+                    print(error)
+                }
+
+            }
+        }
 
     }
     func fetchRequests() async {

@@ -263,40 +263,35 @@ extension SelectedRoadmapItemView {
         let request: RequestModel
         @Environment(RoadmapViewModel.self) var roadmapVM
         var body: some View {
-            Button { /*roadmapVM.upvote(subject: subject)*/ } label: {
-                //            HStack {
-                //                Image(systemName: "arrowshape.up.fill")
-                //
-                //                Text("Upvote")
-                //            }
-                //            .bold()
-                //            .padding()
-                //            .background(Color(.tintColor)
-                //                .cornerRadius(20))
+            Button { roadmapVM.upvote(request: request) } label: {
+//                HStack {
+//                    Image(systemName: "arrowshape.up.fill")
+//
+//                    Text("Upvote")
+//                }
+//                .bold()
+//                .padding()
+//                .background(Color(.tintColor)
+//                    .cornerRadius(20))
                 HStack {
                     Image(systemName: "arrowshape.up.fill")
-                    //                        .changeEffect(.spray {
-                    //                            Image(systemName: "arrowshape.up.fill")
-                    //                        }, value: request.didUpvote, isEnabled: !request.didUpvote)
-                    //                        .changeEffect(.spray {
-                    //                            Text("\(request.upvoteCount)")
-                    //                        }, value: request.didUpvote, isEnabled: !request.didUpvote)
+                        .changeEffect(.spray {
+                            Image(systemName: "arrowshape.up.fill")
+                        }, value: request.didUpvote, isEnabled: !request.didUpvote)
+                        .changeEffect(.spray {
+                            Text("\(request.upvoteCount)")
+                        }, value: request.didUpvote, isEnabled: !request.didUpvote)
 
                     Text("\(request.upvoteCount)")
                 }
                 .bold()
                 .padding(.vertical, 10)
                 .padding(.horizontal, 20)
-                .foregroundStyle(Color(.gray))
-                .background(Color(.gray)
+                .foregroundStyle(Color(request.didUpvote ? .tintColor : .gray))
+                .background(Color(request.didUpvote ? .tintColor : .gray)
                     .cornerRadius(20)
                     .opacity(0.2)
                 )
-                //                .foregroundStyle(Color(request.didUpvote ? .tintColor : .gray))
-                //                .background(Color(request.didUpvote ? .tintColor : .gray)
-                //                    .cornerRadius(20)
-                //                    .opacity(0.2)
-                //                )
 
             }
         }
