@@ -13,9 +13,8 @@ import SwiftUI
         var description: String
         var typeId: Int
     }
-    let tags: [RoadmapSubject.Tag] = RoadmapSubject.Tag.allCases
 
-    var selectedTag: RoadmapSubject.Tag = .feature
+    var selectedTag: RequestModel.RequestType = .feature
     var title: String = ""
     var description: String = ""
 
@@ -27,7 +26,8 @@ import SwiftUI
         print("Description: \(description)")
         print("--------------------")
         print("Tag: \(selectedTag.rawValue)")
-        let newRequest = NewRequest(title: title, description: description, typeId: 1)
+
+        let newRequest = NewRequest(title: title, description: description, typeId: selectedTag.rawValue)
 
         await SessionViewModel.shared.post(endpoint: "requests", body: newRequest) { (result: Result<Data, Error>) in
             switch result {
@@ -77,8 +77,8 @@ struct NewRequestView: View {
                         .focused($focusedField, equals: .description)
 
                     Picker("Tag", selection: $requestVM.selectedTag) {
-                        ForEach(requestVM.tags, id: \.self) {
-                            Text($0.rawValue)
+                        ForEach(RequestModel.RequestType.allCases, id: \.self) {
+                            Text($0.description)
                         }
                     }
                     .onChange(of: requestVM.selectedTag) {

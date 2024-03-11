@@ -55,16 +55,25 @@ extension RequestModel {
         }
     }
 
-    enum RequestType: Int, Codable {
+    enum RequestType: Int, Codable, CaseIterable {
         case feature = 1
-        case bug = 2
-        case enhancement = 3
+        case improvement = 2
+        case bug = 3
 
         var description: String {
             switch self {
             case .feature: return "Feature"
+            case .improvement: return "Improvement"
             case .bug: return "Bug"
-            case .enhancement: return "Enhancement"
+
+            }
+        }
+
+        var color: Color {
+            switch self {
+            case .feature: return .blue
+            case .improvement: return .green
+            case .bug: return .red
             }
         }
     }
@@ -129,7 +138,7 @@ struct RoadmapListItemView: View {
                 Text("\(request.upvoteCount)")
             }
             .font(.title3)
-//            .foregroundStyle(Color(subject.didUpvote ? .tintColor : .label))
+            //            .foregroundStyle(Color(subject.didUpvote ? .tintColor : .label))
             VStack(spacing: 10) {
 
                 VStack(alignment: .leading) {
