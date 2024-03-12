@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 @Observable class RoadmapViewModel {
     var subjects: [RoadmapSubject] = RoadmapSubject.mockArray
@@ -94,14 +95,14 @@ struct RoadmapView: View {
                         }
                         .buttonStyle(.plain)
                     }
-//                    ForEach(roadmapVM.subjects) { request in
-//                        NavigationLink(destination: SelectedRoadmapItemView(subject: subject)) {
-//                            RoadmapListItemView(subject: subject)
-//                                .padding(.horizontal)
-//                        }
-//                        .buttonStyle(.plain)
+                    //                    ForEach(roadmapVM.subjects) { request in
+                    //                        NavigationLink(destination: SelectedRoadmapItemView(subject: subject)) {
+                    //                            RoadmapListItemView(subject: subject)
+                    //                                .padding(.horizontal)
+                    //                        }
+                    //                        .buttonStyle(.plain)
 
-//                    }
+                    //                    }
 
                 }
 
