@@ -14,6 +14,7 @@ struct SendComment: Encodable {
 }
 struct RequestComment: Decodable, Identifiable {
     let id: Int
+    let displayName: String
     let userId: Int
     let text: String
     let createdAt: Date
@@ -381,7 +382,7 @@ private struct ChatBubble: View {
         VStack(alignment: .leading, spacing: 5) {
             HStack {
                 HStack {
-                    Text("UserID: \(comment.userId)")
+                    Text(comment.displayName)
                     if comment.isDeveloper {
                         Text("DEVELOPER")
                             .fontDesign(.monospaced)

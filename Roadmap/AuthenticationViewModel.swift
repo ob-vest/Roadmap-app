@@ -112,6 +112,13 @@ extension SessionViewModel {
     }
 }
 
+extension SessionViewModel {
+    func logout() {
+        user = nil
+        KeychainStorage.deleteUser()
+    }
+}
+
 @Observable
 class AuthViewModel {
 //    var user: User?

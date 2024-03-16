@@ -21,6 +21,13 @@ struct ContentView: View {
             SignInWithAppleButton(onRequest: authVM.configurationRequest, onCompletion: authVM.authResult)
                 .frame(height: 50)
                 .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+
+            Text("Remove User")
+                .onTapGesture {
+                    sessionVM.logout()
+                }
+                .foregroundColor(.red)
+                .padding()
         }
         .padding()
         .onAppear {

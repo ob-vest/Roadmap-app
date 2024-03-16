@@ -38,6 +38,11 @@ enum KeychainStorage {
         return SessionViewModel.User(appleUserId: appleUserId, authorizationToken: authorizationToken)
     }
 
+    static func deleteUser() {
+        delete(.appleUserId)
+        delete(.authorizationToken)
+    }
+
     static func delete(_ key: Key) {
         do {
             try keychain.remove(key.rawValue)
